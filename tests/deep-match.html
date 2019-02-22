@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>deep match tests</title>
+
+<h1>deep match tests</h1>
+<h2 id=pass>Tests passed:</h2>
+<ul></ul>
+<h2 id=fail>Tests failed:</h2>
+<ul></ul>
+
+<script type=module>
+  import deepMatch from '../index.js'
+
+  const tests = [
+
+    {
+      name: 'Find all values with <code>//*</code>',
+      input: () => JSON.stringify(deepMatch([1, 2, 3], '//*')),
+      expected: JSON.stringify([1, 2, 3])
+    },
+
+    // By Type
+    {
+      name: 'Find all strings with <code>//string</code>',
+      input: () => JSON.stringify(
+        deepMatch(['one', {string: 'two'}, ['three']], '//string')
+      ),
+      expected: JSON.stringify(['one', 'two', 'three'])
+    },
+    {
+      name: 'Find all nulls with <code>//null</code>',
+      input: () => JSON.stringify(
+        deepMatch([1, 2, 3, null, null], '//null')
+      ),
+      expected: JSON.stringify([null, null])
+    },
+    {
+      name: 'Find all numbers with <code>//number</code>',
+      input: () => JSON.stringify(
+        deepMatch(['one', 2, 'three', 4], '//number')
+      ),
+      expected: JSON.stringify([2, 4])
+    },
+    {
+      name: 'Find all booleans with <code>//boolean</code>',
+      input: () => JSON.stringify(
+        deepMatch([true, 'true', false, 'false'], '//boolean')
+      ),
+      expected: JSON.stringify([true, false])
+    },
+    {
+      name: 'Find all arrays with <code>//array</code>',
+      input: () => JSON.stringify(
+        deepMatch({array: [1], notarray: {prop: 2}}, '//array')
+      ),
+      expected: JSON.stringify([[1]])
+    },
+    {
+      name: 'Find all keys with <code>//key</code>',
+      input: () => JSON.stringify(
+        deepMatch({one: 1, two: 2}, '//key')
+      ),
+      expected: JSON.stringify(['one', 'two'])
+    },
+    {
+      name: 'Find all values with <code>//value</code>',
+      input: () => JSON.stringify(
+        deepMatch({one: 1, two: 2}, '//value')
+      ),
+      expected: JSON.stringify([1, 2])
+    },
+    {
+      name: 'Find all properties with <code>//property</code>',
+      input: () => JSON.stringify(
+        deepMatch({one: 1, two: 2}, '//property')
+      ),
+      expected: JSON.stringify([['one', 1], ['two', 2]])
+    },
+    {
+      name: 'Find all objects with <code>//object</code>',
+      input: () => JSON.stringify(
+        deepMatch([1, 'two', {three: 3}, [[4],[{five: 5}]]], '//object')
+      ),
+      expected: JSON.stringify([{three: 3}, {five: 5}])
+    },
+
+    // XPath axes
+    {
+      name: 'Find the array containing 5 with <code>//number[text()="5"]/parent::array</code>',
+      input: () => JSON.stringify(
+        deepMatch([1, [2, [3, [4, [5]]]]], '//number[text()="5"]/parent::array')
+      ),
+      expected: JSON.stringify([[5]])
+    },
+    {
+      name: 'Find all arrays containing 5 with <code>//number[text()="5"]/ancestor::array</code>',
+      input: () => JSON.stringify(
+        deepMatch([1, [2, [3, [4, [5]]]]], '//number[text()="5"]/ancestor::array')
+      ),
+      expected: JSON.stringify([
+        [1, [2, [3, [4, [5]]]]],
+        [2, [3, [4, [5]]]],
+        [3, [4, [5]]],
+        [4, [5]],
+        [5]
+      ])
+    },
+    {
+      name: 'Find any value preceding a boolean true with <code>//boolean[text()="true"]/preceding-sibling::*[1]</code>',
+      input: () => JSON.stringify(
+        deepMatch([1, true, 2, false, 3, true, 4, false], '//boolean[text()="true"]/preceding-sibling::*[1]')
+      ),
+      expected: JSON.stringify([1, 3])
+    },
+    {
+      name: 'Find any value following a boolean false with <code>//boolean[text()="false"]/following-sibling::*[1]</code>',
+      input: () => JSON.stringify(
+        deepMatch([1, true, 2, false, 3, true, 4, false], '//boolean[text()="false"]/following-sibling::*[1]')
+      ),
+      expected: JSON.stringify([3])
+    },
+
+    // XPath functions
+    {
+      name: 'Find the first value with <code>//*[position() = 1]</code>',
+      input: () => JSON.stringify(
+        deepMatch(['one', 'two', 'three'], '//*[position() = 1]')
+      ),
+      expected: JSON.stringify(['one'])
+    },
+    {
+      name: 'Find values containing the string "test" <code>//*[contains(text(), "test")]</code>',
+      input: () => JSON.stringify(
+        deepMatch(['test', 'testing', 'quizzed'], '//*[contains(text(), "test")]')
+      ),
+      expected: JSON.stringify(['test', 'testing'])
+    },
+
+  ]
+
+  const results = tests.reduce((acc, test) => {
+      test.result = test.input()
+      test.result === test.expected
+        ? acc.pass.push(test)
+        : acc.fail.push(test)
+      return acc
+    },
+    {pass: [], fail: []}
+  )
+
+  const passed = results.pass.length
+  const failed = results.fail.length
+  const total = passed + failed
+
+  // populate results to page
+  document.querySelector('#pass').textContent = `Tests passed ${passed}/${total}:`
+  document.querySelector('#fail').textContent = `Tests failed ${failed}/${total}:`
+
+  results.pass.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary>${test.name}</summary>
+        <h3>Test</h3>
+        <p><pre>${test.input.toString()}</pre></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#pass + ul').appendChild(tag)
+  })
+
+  results.fail.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary style=text-decoration:line-through>${test.name}</summary>
+        <h3>Test</h3>
+        <p><code>${test.input.toString().slice(6)}</code></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#fail + ul').appendChild(tag)
+  })
+</script>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>JSON objects to MicroXML tests</title>
+
+<h1>JSON objects to MicroXML tests</h1>
+<h2 id=pass>Tests passed:</h2>
+<ul></ul>
+<h2 id=fail>Tests failed:</h2>
+<ul></ul>
+
+<script type=module>
+  import object2microxml from '../object-to-microxml.js'
+
+  const tests = [
+
+    // String
+    {
+      name: 'String',
+      input: () => JSON.stringify(object2microxml('one')),
+      expected: JSON.stringify(['string', {}, ['one']])
+    },
+    
+    // Array
+    {
+      name: 'Array',
+      input: () => JSON.stringify(object2microxml([1, 2, 3])),
+      expected: JSON.stringify(['array', {}, [
+        ['number', {}, ['1']],
+        ['number', {}, ['2']],
+        ['number', {}, ['3']],
+      ]])
+    },
+
+    // Object
+    {
+      name: 'Object',
+      input: () => JSON.stringify(object2microxml({one: 1, two: 2, three: 3})),
+      expected: JSON.stringify(['object', {}, [
+        ['property', {}, [
+          ['key', {}, ['one']],
+          ['value', {}, [
+            ['number', {}, ['1']]
+          ]]
+        ]],
+        ['property', {}, [
+          ['key', {}, ['two']],
+          ['value', {}, [
+            ['number', {}, ['2']]
+          ]]
+        ]],
+        ['property', {}, [
+          ['key', {}, ['three']],
+          ['value', {}, [
+            ['number', {}, ['3']]
+          ]]
+        ]]
+      ]])
+    },
+
+    // Number
+    {
+      name: 'Number',
+      input: () => JSON.stringify(object2microxml(1)),
+      expected: JSON.stringify(['number', {}, ['1']])
+    },
+
+    // Boolean
+    {
+      name: 'Boolean',
+      input: () => JSON.stringify(object2microxml(true)),
+      expected: JSON.stringify(['boolean', {}, ['true']])
+    },
+
+    // Null
+    {
+      name: 'Null',
+      input: () => JSON.stringify(object2microxml(null)),
+      expected: JSON.stringify(['null', {}, ['null']])
+    }
+
+  ]
+
+  const results = tests.reduce((acc, test) => {
+      test.result = test.input()
+      test.result === test.expected
+        ? acc.pass.push(test)
+        : acc.fail.push(test)
+      return acc
+    },
+    {pass: [], fail: []}
+  )
+
+  const passed = results.pass.length
+  const failed = results.fail.length
+  const total = passed + failed
+
+  // populate results to page
+  document.querySelector('#pass').textContent = `Tests passed ${passed}/${total}:`
+  document.querySelector('#fail').textContent = `Tests failed ${failed}/${total}:`
+
+  results.pass.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary>${test.name}</summary>
+        <h3>Test</h3>
+        <p><pre>${test.input.toString()}</pre></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#pass + ul').appendChild(tag)
+  })
+
+  results.fail.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary style=text-decoration:line-through>${test.name}</summary>
+        <h3>Test</h3>
+        <p><code>${test.input.toString().slice(6)}</code></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#fail + ul').appendChild(tag)
+  })
+</script>

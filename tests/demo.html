@@ -1,0 +1,53 @@
+<script type=module>
+  import jpath from './jpath.js'
+
+  // JPath queries
+  const test = [
+    'one',
+    {two: 'two'},
+    ['three', 4, {five: 5}],
+    [true, false],
+    'six',
+    null
+  ]
+
+  // Find all strings
+  console.group('Find all strings with: //string')
+  console.log(
+    jpath(test, '//string')
+  )
+  console.groupEnd()
+
+  // Find all strings containing text
+  console.group('Find all strings containing text "one" with: //*[contains(text(), "one")]')
+  console.log(
+    jpath(test, '//*[contains(text(), "one")]')
+  )
+  console.groupEnd()
+
+  // Find key/value pairs
+  console.group('Find all key/value pairs with: //property')
+  console.log(
+    jpath(test, '//property')
+  )
+  console.groupEnd()
+
+  // Find object containing numbers
+  console.group('Find objects containing numbers with: //value/number/ancestor::object')
+  console.log(
+    jpath(test, '//value/number/ancestor::object')
+  )
+  console.groupEnd()
+
+
+  // Find value after 'true' containing numbers
+  console.group('Find value after boolean true: //boolean/following-sibling::*')
+  console.log(
+    jpath(test, '//boolean/following-sibling::*')
+  )
+  console.groupEnd()
+
+  console.log(
+    jpath([{one: 'one'}, {two: 2}], '//number/ancestor::object')
+  )
+</script>
