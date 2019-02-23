@@ -1,10 +1,10 @@
 # deepmatch
 
-Query deeply-nested JSON objects with XPath
+Query deeply-nested JavaScript objects with XPath
 
 ## About
 
-Have you ever wished there was a query language for sifting, filtering, and sorting deeply-nested JSON to find exactly the values you're looking for?
+Have you ever wished there was a query language for sifting, filtering, and sorting deeply-nested JSON or Js objects to find exactly the values you're looking for?
 
 That language already exists, and it's called [XPath](https://developer.mozilla.org/en-US/docs/Web/XPath), and this package provides a way that you can use XPath to query JSON, or JSON-compatible objects in JavaScript.
 
@@ -14,7 +14,16 @@ This process works by joining together a number of different technologies, JSON 
 
 ### Step 1: Convert JS objects into MicroXML
 
-You supply a JSON-compatible object from JavaScript - this can be the output of [`JSON.parse()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse), or it can be any object from JavaScript that includes the following data types: `null`, `string`, `number`, `boolean`, `array`, or `object`.
+You supply a JSON-compatible object from JavaScript - this can be the output of [`JSON.parse()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse), or it can be any object from JavaScript included in the supported data types.
+
+> #### Supported data types
+>
+> - [`null`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null)
+> - [`String`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
+> - [`Number`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)
+> - [`Boolean`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)
+> - [`Array`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+> - [`Object`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 
 When fed into the function provided by [object-to-microxml.js](./object-to-microxml.js) the object will be consumed and converted into a [MicroXML](https://dvcs.w3.org/hg/microxml/raw-file/tip/spec/microxml.html) representation of the same value. For example, the string `Hello` might be represented in MicroXML as `['string', {}, ['Hello']]`.
 
@@ -36,7 +45,7 @@ If the objects contain arrays or other objects, the entire structure will be con
 
 Once the original object has been converted into a tree of MicroXML, we can consume this data with the function in [microxml-to-dom.js](./microxml-to-dom.js) and build an XML DOM from what we find. This means that input like `['string', {}, ['demo']]` will be represented in XML as `<string>demo</string>`.
 
-```
+```js
 // MicroXML
 ['array', {}, [
   ['number', {}, ['1']],
@@ -58,13 +67,13 @@ Once the original object has been converted into a tree of MicroXML, we can cons
 
 ### Step 3: Query DOM with XPath
 
-Once we have DOM representing our original data we can use XPath with the function provided in [index.js](./index.js) to run `document.evaluate()` to match XML elements in our DOM based on different criteria. XPath is more expressive and powerful than CSS selectors, so you will be able to write queries for things like:
+Once we have DOM representing our original data we can use XPath with the function provided in [index.js](./index.js) to run [`document.evaluate()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate) to match XML elements in our DOM based on different criteria. XPath is more expressive and powerful than CSS selectors, so you will be able to write queries for things like:
 
 - “Find all arrays containing boolean values”
-- “Find all objects containing a string that includes the text "example"”
-- “Find all objects where the value associated with the 'dob' key is a number less than 1990”
+- “Find all objects containing a string that includes the text ‘example’”
+- “Find all objects where the value associated with the ‘dob’ key is a number less than 1990”
 
-When you write an XPath selector to match values inside the DOM structure representing the original data, `document.evaluate()` will return the matching DOM nodes. Here in this example, lets query for all `<number>` tags with `text()` content that is a `number()` that is greater than (`>`) 1. In XPath we can describe that as: `//number[number(text()) > 1]`
+When you write an XPath selector to match values inside the DOM structure representing the original data, `document.evaluate()` will return the matching DOM nodes. Here in this example, lets query for all `<number>` tags with `text()` content that is a `number()` that is greater than (`>`) 1. In XPath we can describe that as: `//number[text() > 1]`
 
 ```xml
 <!-- DOM -->
@@ -128,7 +137,7 @@ You want to filter this array to only keep the user objects for users that were 
 4. Finally, we want to return the whole user object containing the matching numbers, so we'll need to find the ancestor object, in XPath that's `/ancestor::object`
 
 Separately, each of these pieces is easy to write and reason with, and the syntax is incredibly terse. All together that gives us an XPath of:
-  
+
 ```xpath
 //key[. = "dob"]/following-sibling::value[. < 1990]/ancestor::object
 ```
@@ -137,11 +146,11 @@ That's quite a mouthful. If you want to break it down further into bite-sized pi
 
 ```js
 [
-  '//key',
-  '[. = "dob"]',
-  '/following-sibling::value',
-  '[. < 1990]',
-  '/ancestor::object'
+  '//key',                      // Find all keys
+  '[. = "dob"]',                // named 'dob'
+  '/following-sibling::value',  // locate their associated value
+  '[. < 1990]',                 // if the value is less than 1990
+  '/ancestor::object'           // and select their ancestor object
 ].join('')
 ```
 
@@ -175,3 +184,9 @@ console.log(
 
 // ['d']
 ```
+
+For a comparison between CSS and XPath selectors, check out [this page on MDN](https://developer.mozilla.org/en-US/docs/Web/XPath/Comparison_with_CSS_selectors)
+
+## Browser Support
+
+The [browser support for XPath](https://caniuse.com/#feat=document-evaluate-xpath&search=xpath) is pretty good, supported by all modern browsers. Deepmatch is written to work in the same browsers where XPath is supported natively. If you are interested in supporting Internet Explorer or other legacy browsers, it may be possible to polyfill support for XPath and `document.evaluate()` with [wicked-good-xpath](https://github.com/google/wicked-good-xpath).

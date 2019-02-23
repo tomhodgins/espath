@@ -1,7 +1,7 @@
 {
   "name": "deepmatch",
   "version": "0.1.0",
-  "description": "Query deeply-nested JSON-compatible JavaScript objects with XPath",
+  "description": "Query deeply-nested JavaScript objects with XPath",
   "main": "index.js",
   "directories": {
     "test": "tests"

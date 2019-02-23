@@ -17,11 +17,11 @@ export default function(object=[], path='//*') {
       XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
       null
     )
-  
+
     for (let i=0; i<xpath.snapshotLength; i++) {
       nodeArray.push(xpath.snapshotItem(i))
     }
-  
+
     return nodeArray.map(object => dom2object(object))
 
   } else {
