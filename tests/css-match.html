@@ -3,6 +3,16 @@
 <meta name=viewport content="width=device-width, initial-scale=1">
 <title>CSS match tests</title>
 
+<style>
+  body {
+    line-height: 1.4;
+  }
+  code {
+    background: rgb(255, 255, 200);
+    padding: .125em .25em;
+  }
+</style>
+
 <h1>CSS match tests</h1>
 <h2 id=pass>Tests passed:</h2>
 <ul></ul>
@@ -202,6 +212,98 @@
         cssMatch([1, 'two', true, false, 6], ':only-of-type')
       ),
       expected: JSON.stringify(['two'])
+    },
+
+    // An+B microsyntax
+    {
+      name: 'Find values with odd-numbered positions with <code>:nth-of-type(odd)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(odd)'
+        )
+      ),
+      expected: JSON.stringify([1, 3, 5, 7, 9])
+    },
+    {
+      name: 'Find values with even-numbered positions with <code>:nth-of-type(even)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(even)'
+        )
+      ),
+      expected: JSON.stringify([2, 4, 6, 8, 10])
+    },
+    {
+      name: 'Find first three values with <code>:nth-of-type(-n+3)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(-n+3)'
+        )
+      ),
+      expected: JSON.stringify([1, 2, 3])
+    },
+    {
+      name: 'Find last three values with <code>:nth-last-of-type(-n+3)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-last-of-type(-n+3)'
+        )
+      ),
+      expected: JSON.stringify([8, 9, 10])
+    },
+    {
+      name: 'Find every 3rd value with <code>:nth-of-type(3n)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(3n)'
+        )
+      ),
+      expected: JSON.stringify([3, 6, 9])
+    },
+    {
+      name: 'Find every 4th value with <code>:nth-of-type(4n)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(4n)'
+        )
+      ),
+      expected: JSON.stringify([4, 8])
+    },
+    {
+      name: 'Find every 5th value with <code>:nth-of-type(5n)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(5n)'
+        )
+      ),
+      expected: JSON.stringify([5, 10])
+    },
+    {
+      name: 'Start with an offset of 5 with <code>:nth-of-type(n+5)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(n+5)'
+        )
+      ),
+      expected: JSON.stringify([5, 6, 7, 8, 9, 10])
+    },
+    {
+      name: 'Find every 2nd value with an offset of 2 with <code>:nth-of-type(2n+2)</code>',
+      input: () => JSON.stringify(
+        cssMatch(
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          ':nth-of-type(2n+2)'
+        )
+      ),
+      expected: JSON.stringify([2, 4, 6, 8, 10])
     },
 
     // Input testing
