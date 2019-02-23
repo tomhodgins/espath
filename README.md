@@ -41,6 +41,8 @@ If the objects contain arrays or other objects, the entire structure will be con
 ]]
 ```
 
+> View the [object-to-microxml.js](https://tomhodgins.github.io/deepmatch/object-to-microxml.html) for more examples
+
 ### Step 2: Convert MicroXML into DOM
 
 Once the original object has been converted into a tree of MicroXML, we can consume this data with the function in [microxml-to-dom.js](./microxml-to-dom.js) and build an XML DOM from what we find. This means that input like `['string', {}, ['demo']]` will be represented in XML as `<string>demo</string>`.
@@ -64,6 +66,8 @@ Once the original object has been converted into a tree of MicroXML, we can cons
 ```
 
 > We don't make use of attributes at all yet, but there may be opportunities in the future for computing certain attributes for things that XPath can't query, to further enhance XPath's ability to target these elements with all available information we know about the values.
+
+> View the [microxml-to-dom.js](https://tomhodgins.github.io/deepmatch/tests/microxml-to-dom.html) for more examples
 
 ### Step 3: Query DOM with XPath
 
@@ -92,6 +96,8 @@ When you write an XPath selector to match values inside the DOM structure repres
 ]
 ```
 
+> View the [deepmatch test page](https://tomhodgins.github.io/deepmatch/tests/deep-match.html) for more examples
+
 ### Step 4: Convert matching DOM back into JS objects
 
 The final step once we have an array of DOM nodes matching our XPath query, is to use the function provided in [dom-to-object.js](./dom-to-object.js) to convert the DOM nodes back into their original JavaScript objects.
@@ -102,6 +108,8 @@ The final step once we have an array of DOM nodes matching our XPath query, is t
 ```
 
 By using this process of representing JavaScript objects in an intermediate format of XML DOM we are able to combine the expressive power of XPath and put it to work to help us find the `'needle'` in `{very: ['large', ['haystacks']]}`.
+
+> View the [dom-to-object.js test page](https://tomhodgins.github.io/deepmatch/tests/dom-to-object.html) for more examples
 
 ## Example
 
@@ -185,8 +193,12 @@ console.log(
 // ['d']
 ```
 
+> View the [cssmatch test page](https://tomhodgins.github.io/deepmatch/tests/css-match.html) for more examples
+
 For a comparison between CSS and XPath selectors, check out [this page on MDN](https://developer.mozilla.org/en-US/docs/Web/XPath/Comparison_with_CSS_selectors)
 
 ## Browser Support
 
-The [browser support for XPath](https://caniuse.com/#feat=document-evaluate-xpath&search=xpath) is pretty good, supported by all modern browsers. Deepmatch is written to work in the same browsers where XPath is supported natively. If you are interested in supporting Internet Explorer or other legacy browsers, it may be possible to polyfill support for XPath and `document.evaluate()` with [wicked-good-xpath](https://github.com/google/wicked-good-xpath).
+The [browser support for XPath](https://caniuse.com/#feat=document-evaluate-xpath&search=xpath) looks pretty good, supported by all modern browsers. Deepmatch is written to work in the same browsers where XPath is supported natively, for some reason the current version isn't working in Edge, though [css-match.js](./css-match) and all of the helper functions work.
+
+If you are interested in supporting Internet Explorer or other legacy browsers, it may be possible to polyfill support for XPath and `document.evaluate()` with [wicked-good-xpath](https://github.com/google/wicked-good-xpath).
