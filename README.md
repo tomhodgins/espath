@@ -199,6 +199,6 @@ For a comparison between CSS and XPath selectors, check out [this page on MDN](h
 
 ## Browser Support
 
-The [browser support for XPath](https://caniuse.com/#feat=document-evaluate-xpath&search=xpath) looks pretty good, supported by all modern browsers. Deepmatch is written to work in the same browsers where XPath is supported natively, for some reason the current version isn't working in Edge, though [css-match.js](./css-match) and all of the helper functions work.
+The [browser support for XPath](https://caniuse.com/#feat=document-evaluate-xpath&search=xpath) looks pretty good, supported by all modern browsers. Deepmatch is written to work in the same browsers where XPath is supported natively, for some reason the current version isn't working in Edge, though [css-match.js](./css-match.js) and all of the helper functions work.
 
 If you are interested in supporting Internet Explorer or other legacy browsers, it may be possible to polyfill support for XPath and `document.evaluate()` with [wicked-good-xpath](https://github.com/google/wicked-good-xpath).
