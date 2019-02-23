@@ -16,6 +16,19 @@
 
   const tests = [
 
+    // Null
+    {
+      name: 'Null',
+      input: () => JSON.stringify(
+        dom2object(
+          microxml2dom(
+            object2microxml(null)
+          )
+        )
+      ),
+      expected: JSON.stringify(null)
+    },
+
     // String
     {
       name: 'String',
@@ -25,32 +38,6 @@
         )
       ),
       expected: 'one'
-    },
-
-    // Array
-    {
-      name: 'Array',
-      input: () => JSON.stringify(
-        dom2object(
-          microxml2dom(
-            object2microxml([1, 2, 3])
-          )
-        )
-      ),
-      expected: JSON.stringify([1, 2, 3])
-    },
-
-    // Object
-    {
-      name: 'Object',
-      input: () => JSON.stringify(
-        dom2object(
-          microxml2dom(
-            object2microxml({one: 1, two: 2, three: 3})
-          )
-        )
-      ),
-      expected: JSON.stringify({one: 1, two: 2, three: 3})
     },
 
     // Number
@@ -79,18 +66,47 @@
       expected: JSON.stringify(true)
     },
 
-    // Null
+    // Array
     {
-      name: 'Null',
+      name: 'Array',
       input: () => JSON.stringify(
         dom2object(
           microxml2dom(
-            object2microxml(null)
+            object2microxml([1, 2, 3])
           )
         )
       ),
-      expected: JSON.stringify(null)
-    }
+      expected: JSON.stringify([1, 2, 3])
+    },
+
+    // Object
+    {
+      name: 'Object',
+      input: () => JSON.stringify(
+        dom2object(
+          microxml2dom(
+            object2microxml({one: 1, two: 2, three: 3})
+          )
+        )
+      ),
+      expected: JSON.stringify({one: 1, two: 2, three: 3})
+    },
+
+    // Input testing
+    {
+      name: 'No input',
+      input: () => JSON.stringify(
+        dom2object()
+      ),
+      expected: JSON.stringify([])
+    },
+    {
+      name: 'Wrong input',
+      input: () => JSON.stringify(
+        dom2object(() => 'lol oops!')
+      ),
+      expected: JSON.stringify([])
+    },
 
   ]
 

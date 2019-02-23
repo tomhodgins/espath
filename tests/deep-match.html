@@ -14,13 +14,16 @@
 
   const tests = [
 
+    // Universal selector
     {
       name: 'Find all values with <code>//*</code>',
-      input: () => JSON.stringify(deepMatch([1, 2, 3], '//*')),
+      input: () => JSON.stringify(
+        deepMatch([1, 2, 3], '//*')
+      ),
       expected: JSON.stringify([1, 2, 3])
     },
 
-    // By Type
+    // Select by type
     {
       name: 'Find all strings with <code>//string</code>',
       input: () => JSON.stringify(
@@ -130,11 +133,66 @@
       expected: JSON.stringify(['one'])
     },
     {
-      name: 'Find values containing the string "test" <code>//*[contains(text(), "test")]</code>',
+      name: 'Find values containing the string "test" with <code>//*[contains(text(), "test")]</code>',
       input: () => JSON.stringify(
         deepMatch(['test', 'testing', 'quizzed'], '//*[contains(text(), "test")]')
       ),
       expected: JSON.stringify(['test', 'testing'])
+    },
+
+    // Example
+    {
+      name: 'Find all users born before 1990 with <code>//key[.="dob"]/following-sibling::value[number(.) < 1990]/ancestor::object</code>',
+      input: () => JSON.stringify(
+        deepMatch(
+          [
+            {
+              user: 'Johnny',
+              dob: 1995
+            },
+            {
+              user: 'Ronny',
+              dob: 1985
+            },
+            {
+              user: 'Donny',
+              dob: 1980
+            }
+          ],
+          [
+            '//key[.="dob"]', // find all <key>dob</key>
+            '/following-sibling::value', // find associated value
+            '[number(.) < 1990]', // compare value as a number to 1990
+            '/ancestor::object', // and target the parent object
+          ].join('')
+        )
+      ),
+      expected: JSON.stringify([
+        {
+          user: 'Ronny',
+          dob: 1985
+        },
+        {
+          user: 'Donny',
+          dob: 1980
+        }
+      ])
+    },
+
+    // Input testing
+    {
+      name: 'No input',
+      input: () => JSON.stringify(
+        deepMatch()
+      ),
+      expected: JSON.stringify([])
+    },
+    {
+      name: 'Wrong input',
+      input: () => JSON.stringify(
+        deepMatch(() => 'lol oops!')
+      ),
+      expected: JSON.stringify([])
     },
 
   ]

@@ -1,0 +1,32 @@
+{
+  "name": "deepmatch",
+  "version": "0.1.0",
+  "description": "Query deeply-nested JSON-compatible JavaScript objects with XPath",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomhodgins/deepmatch.git"
+  },
+  "keywords": [
+    "xpath",
+    "json",
+    "js",
+    "object",
+    "microxml",
+    "dom",
+    "query",
+    "selector"
+  ],
+  "author": "Tommy Hodgins",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tomhodgins/deepmatch/issues"
+  },
+  "homepage": "https://github.com/tomhodgins/deepmatch#readme"
+}

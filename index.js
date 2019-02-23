@@ -4,22 +4,30 @@ import dom2object from './dom-to-object.js'
 
 export default function(object=[], path='//*') {
 
-  const nodeArray = []
+  const doc = microxml2dom(object2microxml(object))
 
-  const xpath = document.evaluate(
-    path,
-    microxml2dom(
-      object2microxml(object)
-    ),
-    null,
-    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-    null
-  )
+  if (arguments.length && doc.tagName) {
 
-  for (let i=0; i<xpath.snapshotLength; i++) {
-    nodeArray.push(xpath.snapshotItem(i))
+    const nodeArray = []
+
+    const xpath = document.evaluate(
+      path,
+      doc,
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      null
+    )
+  
+    for (let i=0; i<xpath.snapshotLength; i++) {
+      nodeArray.push(xpath.snapshotItem(i))
+    }
+  
+    return nodeArray.map(object => dom2object(object))
+
+  } else {
+
+    return []
+
   }
-
-  return nodeArray.map(object => dom2object(object))
 
 }

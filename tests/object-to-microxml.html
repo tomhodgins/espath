@@ -14,17 +14,48 @@
 
   const tests = [
 
+    // Null
+    {
+      name: 'Null',
+      input: () => JSON.stringify(
+        object2microxml(null)
+      ),
+      expected: JSON.stringify(['null', {}, ['null']])
+    },
+
     // String
     {
       name: 'String',
-      input: () => JSON.stringify(object2microxml('one')),
+      input: () => JSON.stringify(
+        object2microxml('one')
+      ),
       expected: JSON.stringify(['string', {}, ['one']])
     },
-    
+
+    // Number
+    {
+      name: 'Number',
+      input: () => JSON.stringify(
+        object2microxml(1)
+      ),
+      expected: JSON.stringify(['number', {}, ['1']])
+    },
+
+    // Boolean
+    {
+      name: 'Boolean',
+      input: () => JSON.stringify(
+        object2microxml(true)
+      ),
+      expected: JSON.stringify(['boolean', {}, ['true']])
+    },
+
     // Array
     {
       name: 'Array',
-      input: () => JSON.stringify(object2microxml([1, 2, 3])),
+      input: () => JSON.stringify(
+        object2microxml([1, 2, 3])
+      ),
       expected: JSON.stringify(['array', {}, [
         ['number', {}, ['1']],
         ['number', {}, ['2']],
@@ -35,7 +66,9 @@
     // Object
     {
       name: 'Object',
-      input: () => JSON.stringify(object2microxml({one: 1, two: 2, three: 3})),
+      input: () => JSON.stringify(
+        object2microxml({one: 1, two: 2, three: 3})
+      ),
       expected: JSON.stringify(['object', {}, [
         ['property', {}, [
           ['key', {}, ['one']],
@@ -58,26 +91,21 @@
       ]])
     },
 
-    // Number
+    // Input testing
     {
-      name: 'Number',
-      input: () => JSON.stringify(object2microxml(1)),
-      expected: JSON.stringify(['number', {}, ['1']])
+      name: 'No input',
+      input: () => JSON.stringify(
+        object2microxml()
+      ),
+      expected: JSON.stringify([])
     },
-
-    // Boolean
     {
-      name: 'Boolean',
-      input: () => JSON.stringify(object2microxml(true)),
-      expected: JSON.stringify(['boolean', {}, ['true']])
+      name: 'Unsupported data type',
+      input: () => JSON.stringify(
+        object2microxml(() => 'lol oops!')
+      ),
+      expected: JSON.stringify([])
     },
-
-    // Null
-    {
-      name: 'Null',
-      input: () => JSON.stringify(object2microxml(null)),
-      expected: JSON.stringify(['null', {}, ['null']])
-    }
 
   ]
 

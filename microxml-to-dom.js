@@ -16,6 +16,13 @@ export default function(tree) {
         : node.textContent += child
     )
 
-  return process(tree)
+  return arguments.length 
+  && Array.isArray(tree)
+  && tree.length === 3
+  && tree[0].constructor.name === 'String'
+  && tree[1].constructor.name === 'Object'
+  && Array.isArray(tree[2])
+    ? process(tree)
+    : []
 
 }

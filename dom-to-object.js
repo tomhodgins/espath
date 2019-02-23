@@ -21,6 +21,8 @@ export default function(tree) {
     }
   }
 
-  return consume(tree)
+  return arguments.length && tree.tagName
+    ? consume(tree)
+    : []
 
 }

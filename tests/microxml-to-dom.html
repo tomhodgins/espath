@@ -14,11 +14,32 @@
 
   const tests = [
 
+    // Null
+    {
+      name: 'Null',
+      input: () => microxml2dom(['null', {}, ['null']]).outerHTML,
+      expected: '<null>null</null>'
+    },
+
     // String
     {
       name: 'String',
       input: () => microxml2dom(['string', {}, ['one']]).outerHTML,
       expected: '<string>one</string>'
+    },
+
+    // Number
+    {
+      name: 'Number',
+      input: () => microxml2dom(['number', {}, ['1']]).outerHTML,
+      expected: '<number>1</number>'
+    },
+
+    // Boolean
+    {
+      name: 'Boolean',
+      input: () => microxml2dom(['boolean', {}, ['true']]).outerHTML,
+      expected: '<boolean>true</boolean>'
     },
 
     // Array
@@ -62,26 +83,22 @@
       expected: '<object><property><key>one</key><value><number>1</number></value></property><property><key>two</key><value><number>2</number></value></property><property><key>three</key><value><number>3</number></value></property></object>'
     },
 
-    // Number
-    {
-      name: 'Number',
-      input: () => microxml2dom(['number', {}, ['1']]).outerHTML,
-      expected: '<number>1</number>'
-    },
 
-    // Boolean
+    // Input testing
     {
-      name: 'Boolean',
-      input: () => microxml2dom(['boolean', {}, ['true']]).outerHTML,
-      expected: '<boolean>true</boolean>'
+      name: 'No input',
+      input: () => JSON.stringify(
+        microxml2dom()
+      ),
+      expected: JSON.stringify([])
     },
-
-    // Null
     {
-      name: 'Null',
-      input: () => microxml2dom(['null', {}, ['null']]).outerHTML,
-      expected: '<null>null</null>'
-    }
+      name: 'Unsupported data type',
+      input: () => JSON.stringify(
+        microxml2dom(() => 'lol oops!')
+      ),
+      expected: JSON.stringify([])
+    },
 
   ]
 
@@ -111,9 +128,9 @@
         <h3>Test</h3>
         <p><pre>${test.input.toString()}</pre></p>
         <h3>Expected</h3>
-        <p><code>${test.expected}</code></p>
+        <p><xmp><code>${test.expected}</code></xmp></p>
         <h3>Result</h3>
-        <p><code>${test.result}</code></p>
+        <p><xmp><code>${test.result}</code></xmp></p>
       </details>
     `
     return document.querySelector('#pass + ul').appendChild(tag)
@@ -127,9 +144,9 @@
         <h3>Test</h3>
         <p><code>${test.input.toString().slice(6)}</code></p>
         <h3>Expected</h3>
-        <p><code>${test.expected}</code></p>
+        <p><xmp><code>${test.expected}</code></xmp></p>
         <h3>Result</h3>
-        <p><code>${test.result}</code></p>
+        <p><xmp><code>${test.result}</code></xmp></p>
       </details>
     `
     return document.querySelector('#fail + ul').appendChild(tag)

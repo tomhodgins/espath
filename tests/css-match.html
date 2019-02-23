@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>CSS match tests</title>
+
+<h1>CSS match tests</h1>
+<h2 id=pass>Tests passed:</h2>
+<ul></ul>
+<h2 id=fail>Tests failed:</h2>
+<ul></ul>
+
+<script type=module>
+  import cssMatch from '../css-match.js'
+
+  const tests = [
+
+    // Universal selector
+    {
+      name: 'Find all values with <code>*</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, 2, 3], '*')
+      ),
+      expected: JSON.stringify([1, 2, 3])
+    },
+
+    // Type selector
+    {
+      name: 'Find all strings with <code>string</code>',
+      input: () => JSON.stringify(
+        cssMatch(['one', {string: 'two'}, ['three']], 'string')
+      ),
+      expected: JSON.stringify(['one', 'two', 'three'])
+    },
+    {
+      name: 'Find all nulls with <code>null</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, 2, 3, null, null], 'null')
+      ),
+      expected: JSON.stringify([null, null])
+    },
+    {
+      name: 'Find all numbers with <code>number</code>',
+      input: () => JSON.stringify(
+        cssMatch(['one', 2, 'three', 4], 'number')
+      ),
+      expected: JSON.stringify([2, 4])
+    },
+    {
+      name: 'Find all booleans with <code>boolean</code>',
+      input: () => JSON.stringify(
+        cssMatch([true, 'true', false, 'false'], 'boolean')
+      ),
+      expected: JSON.stringify([true, false])
+    },
+    {
+      name: 'Find all arrays with <code>array</code>',
+      input: () => JSON.stringify(
+        cssMatch({array: [1], notarray: {prop: 2}}, 'array')
+      ),
+      expected: JSON.stringify([[1]])
+    },
+    {
+      name: 'Find all keys with <code>key</code>',
+      input: () => JSON.stringify(
+        cssMatch({one: 1, two: 2}, 'key')
+      ),
+      expected: JSON.stringify(['one', 'two'])
+    },
+    {
+      name: 'Find all values with <code>value</code>',
+      input: () => JSON.stringify(
+        cssMatch({one: 1, two: 2}, 'value')
+      ),
+      expected: JSON.stringify([1, 2])
+    },
+    {
+      name: 'Find all properties with <code>property</code>',
+      input: () => JSON.stringify(
+        cssMatch({one: 1, two: 2}, 'property')
+      ),
+      expected: JSON.stringify([['one', 1], ['two', 2]])
+    },
+    {
+      name: 'Find all objects with <code>object</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, 'two', {three: 3}, [[4],[{five: 5}]]], 'object')
+      ),
+      expected: JSON.stringify([{three: 3}, {five: 5}])
+    },
+
+    // Relational combinators
+    {
+      name: 'Find all numbers inside an array with <code>array number</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, {two: 2}, ['three']], 'array number')
+      ),
+      expected: JSON.stringify([1, 2])
+    },
+    {
+      name: 'Find all numbers that are a direct descendant of an array with <code>array > number</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, {two: 2}, ['three']], 'array > number')
+      ),
+      expected: JSON.stringify([1])
+    },
+    {
+      name: 'Find all following values after a number with <code>number ~ *</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, {two: 2}, ['three']], 'number ~ *')
+      ),
+      expected: JSON.stringify([{two: 2}, ['three']])
+    },
+    {
+      name: 'Find the next following value after a number with <code>number + *</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, {two: 2}, ['three']], 'number + *')
+      ),
+      expected: JSON.stringify([{two: 2}])
+    },
+
+    // Tree structure
+    {
+      name: 'Find all empty with <code>:empty</code>',
+      input: () => JSON.stringify(
+        cssMatch(['', {}, [], 4], ':empty')
+      ),
+      expected: JSON.stringify(['', {}, []])
+    },
+    {
+      name: 'Find all  with <code>*</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, 2, 3], '*')
+      ),
+      expected: JSON.stringify([1, 2, 3])
+    },
+    {
+      name: 'Find second value in list with <code>:nth-child(2)</code>',
+      input: () => JSON.stringify(
+        cssMatch(['a', 'b', 'c', 'd'], ':nth-child(2)')
+      ),
+      expected: JSON.stringify(['b'])
+    },
+    {
+      name: 'Find second-last value in list with <code>:nth-last-child(2)</code>',
+      input: () => JSON.stringify(
+        cssMatch(['a', 'b', 'c', 'd'], ':nth-last-child(2)')
+      ),
+      expected: JSON.stringify(['c'])
+    },
+    {
+      name: 'Find first value in list with <code>:first-child</code>',
+      input: () => JSON.stringify(
+        cssMatch(['a', 'b', 'c', 'd'], ':first-child')
+      ),
+      expected: JSON.stringify(['a'])
+    },
+    {
+      name: 'Find last value in list with <code>:last-child</code>',
+      input: () => JSON.stringify(
+        cssMatch(['a', 'b', 'c', 'd'], ':last-child')
+      ),
+      expected: JSON.stringify(['d'])
+    },
+    {
+      name: 'Find last value in list with <code>:last-child</code>',
+      input: () => JSON.stringify(
+        cssMatch(['a', 'b', 'c', 'd'], ':last-child')
+      ),
+      expected: JSON.stringify(['d'])
+    },
+    {
+      name: 'Find only value in list with <code>:only-child</code>',
+      input: () => JSON.stringify(
+        cssMatch([['a', 'b'], ['c'], 'd'], ':only-child')
+      ),
+      expected: JSON.stringify(['c'])
+    },
+    {
+      name: 'Find every second number value in list with <code>number:nth-of-type(odd)</code>',
+      input: () => JSON.stringify(
+        cssMatch([8, true, 'string', 3, {prop: 'value'}, 4, false, 6], 'number:nth-of-type(odd)')
+      ),
+      expected: JSON.stringify([8, 4])
+    },
+    {
+      name: 'Find the second last boolean value in list with <code>boolean:nth-last-of-type(2)</code>',
+      input: () => JSON.stringify(
+        cssMatch([8, true, 'string', 3, {prop: 'value'}, 4, false, 6], 'boolean:nth-last-of-type(2)')
+      ),
+      expected: JSON.stringify([true])
+    },
+    {
+      name: 'Find the first of a type with <code>string:first-of-type</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, 2, 'three', 4, 5, 'six', 7, 8, 'nine'], 'string:first-of-type')
+      ),
+      expected: JSON.stringify(['three'])
+    },
+    {
+      name: 'Find the last of a type with <code>number:last-of-type</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, 2, 'three', 4, 5, 'six', 7, 8, 'nine'], 'number:last-of-type')
+      ),
+      expected: JSON.stringify([8])
+    },
+    {
+      name: 'Find the only values of their type on each level with <code>:only-of-type</code>',
+      input: () => JSON.stringify(
+        cssMatch([1, 'two', true, false, 6], ':only-of-type')
+      ),
+      expected: JSON.stringify(['two'])
+    },
+
+
+    // Input testing
+    {
+      name: 'No input',
+      input: () => JSON.stringify(
+        cssMatch()
+      ),
+      expected: JSON.stringify([])
+    },
+    {
+      name: 'Wrong input',
+      input: () => JSON.stringify(
+        cssMatch(() => 'lol oops!')
+      ),
+      expected: JSON.stringify([])
+    },
+
+  ]
+
+  const results = tests.reduce((acc, test) => {
+      test.result = test.input()
+      test.result === test.expected
+        ? acc.pass.push(test)
+        : acc.fail.push(test)
+      return acc
+    },
+    {pass: [], fail: []}
+  )
+
+  const passed = results.pass.length
+  const failed = results.fail.length
+  const total = passed + failed
+
+  // populate results to page
+  document.querySelector('#pass').textContent = `Tests passed ${passed}/${total}:`
+  document.querySelector('#fail').textContent = `Tests failed ${failed}/${total}:`
+
+  results.pass.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary>${test.name}</summary>
+        <h3>Test</h3>
+        <p><pre>${test.input.toString()}</pre></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#pass + ul').appendChild(tag)
+  })
+
+  results.fail.forEach(test => {
+    const tag = document.createElement('li')
+    tag.innerHTML = `
+      <details>
+        <summary style=text-decoration:line-through>${test.name}</summary>
+        <h3>Test</h3>
+        <p><code>${test.input.toString().slice(6)}</code></p>
+        <h3>Expected</h3>
+        <p><code>${test.expected}</code></p>
+        <h3>Result</h3>
+        <p><code>${test.result}</code></p>
+      </details>
+    `
+    return document.querySelector('#fail + ul').appendChild(tag)
+  })
+</script>
