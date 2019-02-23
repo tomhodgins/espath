@@ -127,13 +127,6 @@
       expected: JSON.stringify(['', {}, []])
     },
     {
-      name: 'Find all  with <code>*</code>',
-      input: () => JSON.stringify(
-        cssMatch([1, 2, 3], '*')
-      ),
-      expected: JSON.stringify([1, 2, 3])
-    },
-    {
       name: 'Find second value in list with <code>:nth-child(2)</code>',
       input: () => JSON.stringify(
         cssMatch(['a', 'b', 'c', 'd'], ':nth-child(2)')
