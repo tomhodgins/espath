@@ -9,7 +9,6 @@ export default function(object=[], path='//*') {
   if (arguments.length && doc.tagName) {
 
     const nodeArray = []
-
     const xpath = document.evaluate(
       path,
       doc,
@@ -25,9 +24,7 @@ export default function(object=[], path='//*') {
     return nodeArray.map(object => dom2object(object))
 
   } else {
-
     return []
-
   }
 
 }

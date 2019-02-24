@@ -101,6 +101,64 @@
       ]])
     },
 
+    // Nesting
+    {
+      name: 'Deeply nested arrays',
+      input: () => JSON.stringify(
+        object2microxml([[[1]],[[2]]])
+      ),
+      expected: JSON.stringify(
+        ['array', {}, [
+          ['array', {}, [
+            ['array', {}, [
+              ['number', {}, ['1']]
+            ]]
+          ]],
+          ['array', {}, [
+            ['array', {}, [
+              ['number', {}, ['2']]
+            ]]
+          ]]
+        ]]
+      )
+    },
+    {
+      name: 'Deeply nested objects',
+      input: () => JSON.stringify(
+        object2microxml({1: {a: {}}, 2: {b: {}}})
+      ),
+      expected: JSON.stringify(
+        ['object', {}, [
+          ['property', {}, [
+            ['key', {}, ['1']],
+            ['value', {}, [
+              ['object', {}, [
+                ['property', {}, [
+                  ['key', {}, ['a']],
+                  ['value', {}, [
+                    ['object', {}, []]
+                  ]]
+                ]]
+              ]]
+            ]]
+          ]],
+          ['property', {}, [
+            ['key', {}, ['2']],
+            ['value', {}, [
+              ['object', {}, [
+                ['property', {}, [
+                  ['key', {}, ['b']],
+                  ['value', {}, [
+                    ['object', {}, []]
+                  ]]
+                ]]
+              ]]
+            ]]
+          ]]
+        ]]
+      )
+    },
+
     // Input testing
     {
       name: 'No input',

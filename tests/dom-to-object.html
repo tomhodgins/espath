@@ -102,6 +102,30 @@
       expected: JSON.stringify({one: 1, two: 2, three: 3})
     },
 
+    // Nesting
+    {
+      name: 'Deeply nested arrays',
+      input: () => JSON.stringify(
+        dom2object(
+          microxml2dom(
+            object2microxml([[[1]],[[2]]])
+          )
+        )
+      ),
+      expected: JSON.stringify([[[1]],[[2]]])
+    },
+    {
+      name: 'Deeply nested objects',
+      input: () => JSON.stringify(
+        dom2object(
+          microxml2dom(
+            object2microxml({1: {a: {}}, 2: {b: {}}})
+          )
+        )
+      ),
+      expected: JSON.stringify({1: {a: {}}, 2: {b: {}}})
+    },
+
     // Input testing
     {
       name: 'No input',

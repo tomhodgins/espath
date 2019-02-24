@@ -7,7 +7,7 @@
   body {
     line-height: 1.4;
   }
-  code {
+  xmp {
     background: rgb(255, 255, 200);
     padding: .125em .25em;
   }
@@ -93,6 +93,60 @@
       expected: '<object><property><key>one</key><value><number>1</number></value></property><property><key>two</key><value><number>2</number></value></property><property><key>three</key><value><number>3</number></value></property></object>'
     },
 
+    // Nesting
+    {
+      name: 'Deeply nested arrays',
+      input: () => microxml2dom(
+        ['array', {}, [
+          ['array', {}, [
+            ['array', {}, [
+              ['number', {}, ['1']]
+            ]]
+          ]],
+          ['array', {}, [
+            ['array', {}, [
+              ['number', {}, ['2']]
+            ]]
+          ]]
+        ]]
+      ).outerHTML,
+      expected: '<array><array><array><number>1</number></array></array><array><array><number>2</number></array></array></array>'
+    },
+    {
+      name: 'Deeply nested object',
+      input: () => microxml2dom(
+        ['object', {}, [
+          ['property', {}, [
+            ['key', {}, ['1']],
+            ['value', {}, [
+              ['object', {}, [
+                ['property', {}, [
+                  ['key', {}, ['a']],
+                  ['value', {}, [
+                    ['object', {}, []]
+                  ]]
+                ]]
+              ]]
+            ]]
+          ]],
+          ['property', {}, [
+            ['key', {}, ['2']],
+            ['value', {}, [
+              ['object', {}, [
+                ['property', {}, [
+                  ['key', {}, ['b']],
+                  ['value', {}, [
+                    ['object', {}, []]
+                  ]]
+                ]]
+              ]]
+            ]]
+          ]]
+        ]]
+      ).outerHTML,
+      expected: '<object><property><key>1</key><value><object><property><key>a</key><value><object></object></value></property></object></value></property><property><key>2</key><value><object><property><key>b</key><value><object></object></value></property></object></value></property></object>'
+    },
+
 
     // Input testing
     {
@@ -138,9 +192,9 @@
         <h3>Test</h3>
         <p><pre>${test.input.toString()}</pre></p>
         <h3>Expected</h3>
-        <p><xmp><code>${test.expected}</code></xmp></p>
+        <p><xmp>${test.expected}</xmp></p>
         <h3>Result</h3>
-        <p><xmp><code>${test.result}</code></xmp></p>
+        <p><xmp>${test.result}</xmp></p>
       </details>
     `
     return document.querySelector('#pass + ul').appendChild(tag)
@@ -154,9 +208,9 @@
         <h3>Test</h3>
         <p><code>${test.input.toString().slice(6)}</code></p>
         <h3>Expected</h3>
-        <p><xmp><code>${test.expected}</code></xmp></p>
+        <p><xmp>${test.expected}</xmp></p>
         <h3>Result</h3>
-        <p><xmp><code>${test.result}</code></xmp></p>
+        <p><xmp>${test.result}</xmp></p>
       </details>
     `
     return document.querySelector('#fail + ul').appendChild(tag)

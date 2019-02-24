@@ -1,14 +1,5 @@
 export default function(object) {
 
-  const consume = object => {
-    const type = object === null
-      ? 'Null'
-      : object.constructor.name
-    return parse[type]
-      ? parse[type](object)
-      : []
-  }
-
   const parse = {
     'Null'    : value => ['null', {}, ['null']],
     'String'  : value => ['string', {} , [value]],
@@ -25,8 +16,20 @@ export default function(object) {
     ]
   }
 
-  return arguments.length
-    ? consume(object)
-    : []
+  const consume = object => {
+    if (object === null) {
+      return parse.Null()
+    }
+    if (parse[object.constructor.name]) {
+      return parse[object.constructor.name](object)
+    }
+    return []
+  }
+
+  if (arguments.length > 0) {
+    return consume(object)
+  } else {
+    return []
+  }
 
 }

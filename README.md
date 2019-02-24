@@ -8,6 +8,25 @@ Have you ever wished there was a query language for sifting, filtering, and sort
 
 That language already exists, and it's called [XPath](https://developer.mozilla.org/en-US/docs/Web/XPath), and this package provides a way that you can use XPath to query JSON, or JSON-compatible objects in JavaScript.
 
+## Usage
+
+This package is provided as an ES module. The easiest way to get started with ESpath is to import [index.js](./index.js) into a module:
+
+```js
+import esPath from 'https://unpkg.com/espath'
+
+console.log(esPath(['one', 2, {three: 3}], '//object')) // {three: 3}
+```
+
+To use ESpath you will be providing the function you import with two arguments: `object`, and `path`:
+
+```js
+function(object, path)
+```
+
+- `object` represents a JavaScript or JSON object containing [supported data types](#supported-data-types)
+- `path` represents a valid XPath selector
+
 ## How
 
 This process works by joining together a number of different technologies, JSON for the objects we want to query, XML for an intermediate representation of the same information, and DOM to allow us to query that XML representation with XPath. Here's how each step works.

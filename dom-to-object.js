@@ -1,9 +1,7 @@
 export default function(tree) {
 
-  const consume = node => render[node.tagName.toLowerCase()](node)
-
-  const render = {
-    'null'     : node => null,
+  const parse = {
+    'null'     : () => null,
     'number'   : node => Number(node.textContent),
     'boolean'  : node => node.textContent === String(Boolean(node.textContent)),
     'string'   : node => String(node.textContent),
@@ -13,16 +11,20 @@ export default function(tree) {
     'property' : node => [node.children[0].textContent, consume(node.children[1])],
     'object'   : node => {
       const obj = {}
-      Array.from(node.children).forEach(property => {
-        const [key, value] = property.children
-        obj[key.textContent] = consume(value.children[0])
+      Array.from(node.children).forEach(({children}) => {
+        const [key, value] = children
+        obj[key.textContent] = consume(value)
       })
       return obj
     }
   }
 
-  return arguments.length && tree.tagName
-    ? consume(tree)
-    : []
+  const consume = node => parse[node.tagName.toLowerCase()](node)
+
+  if (arguments.length > 0 && tree.tagName) {
+    return consume(tree)
+  } else {
+    return []
+  }
 
 }
