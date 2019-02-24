@@ -1,5 +1,5 @@
 {
-  "name": "deepmatch",
+  "name": "espath",
   "version": "0.1.0",
   "description": "Query deeply-nested JavaScript objects with XPath",
   "main": "index.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tomhodgins/deepmatch.git"
+    "url": "git+https://github.com/tomhodgins/espath.git"
   },
   "keywords": [
     "xpath",
@@ -26,7 +26,7 @@
   "author": "Tommy Hodgins",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tomhodgins/deepmatch/issues"
+    "url": "https://github.com/tomhodgins/espath/issues"
   },
-  "homepage": "https://github.com/tomhodgins/deepmatch#readme"
+  "homepage": "https://github.com/tomhodgins/espath#readme"
 }
