@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width, initial-scale=1">
-<title>deep match tests</title>
+<title>ESpath tests</title>
 
 <style>
   body {
@@ -13,14 +13,14 @@
   }
 </style>
   
-<h1>deep match tests</h1>
+<h1>ESpath tests</h1>
 <h2 id=pass>Tests passed:</h2>
 <ul></ul>
 <h2 id=fail>Tests failed:</h2>
 <ul></ul>
 
 <script type=module>
-  import deepMatch from '../index.js'
+  import esPath from '../index.js'
 
   const tests = [
 
@@ -28,7 +28,7 @@
     {
       name: 'Find all values with <code>//*</code>',
       input: () => JSON.stringify(
-        deepMatch([1, 2, 3], '//*')
+        esPath([1, 2, 3], '//*')
       ),
       expected: JSON.stringify([1, 2, 3])
     },
@@ -37,63 +37,63 @@
     {
       name: 'Find all strings with <code>//string</code>',
       input: () => JSON.stringify(
-        deepMatch(['one', {string: 'two'}, ['three']], '//string')
+        esPath(['one', {string: 'two'}, ['three']], '//string')
       ),
       expected: JSON.stringify(['one', 'two', 'three'])
     },
     {
       name: 'Find all nulls with <code>//null</code>',
       input: () => JSON.stringify(
-        deepMatch([1, 2, 3, null, null], '//null')
+        esPath([1, 2, 3, null, null], '//null')
       ),
       expected: JSON.stringify([null, null])
     },
     {
       name: 'Find all numbers with <code>//number</code>',
       input: () => JSON.stringify(
-        deepMatch(['one', 2, 'three', 4], '//number')
+        esPath(['one', 2, 'three', 4], '//number')
       ),
       expected: JSON.stringify([2, 4])
     },
     {
       name: 'Find all booleans with <code>//boolean</code>',
       input: () => JSON.stringify(
-        deepMatch([true, 'true', false, 'false'], '//boolean')
+        esPath([true, 'true', false, 'false'], '//boolean')
       ),
       expected: JSON.stringify([true, false])
     },
     {
       name: 'Find all arrays with <code>//array</code>',
       input: () => JSON.stringify(
-        deepMatch({array: [1], notarray: {prop: 2}}, '//array')
+        esPath({array: [1], notarray: {prop: 2}}, '//array')
       ),
       expected: JSON.stringify([[1]])
     },
     {
       name: 'Find all keys with <code>//key</code>',
       input: () => JSON.stringify(
-        deepMatch({one: 1, two: 2}, '//key')
+        esPath({one: 1, two: 2}, '//key')
       ),
       expected: JSON.stringify(['one', 'two'])
     },
     {
       name: 'Find all values with <code>//value</code>',
       input: () => JSON.stringify(
-        deepMatch({one: 1, two: 2}, '//value')
+        esPath({one: 1, two: 2}, '//value')
       ),
       expected: JSON.stringify([1, 2])
     },
     {
       name: 'Find all properties with <code>//property</code>',
       input: () => JSON.stringify(
-        deepMatch({one: 1, two: 2}, '//property')
+        esPath({one: 1, two: 2}, '//property')
       ),
       expected: JSON.stringify([['one', 1], ['two', 2]])
     },
     {
       name: 'Find all objects with <code>//object</code>',
       input: () => JSON.stringify(
-        deepMatch([1, 'two', {three: 3}, [[4],[{five: 5}]]], '//object')
+        esPath([1, 'two', {three: 3}, [[4],[{five: 5}]]], '//object')
       ),
       expected: JSON.stringify([{three: 3}, {five: 5}])
     },
@@ -102,14 +102,14 @@
     {
       name: 'Find the array containing 5 with <code>//number[text()="5"]/parent::array</code>',
       input: () => JSON.stringify(
-        deepMatch([1, [2, [3, [4, [5]]]]], '//number[text()="5"]/parent::array')
+        esPath([1, [2, [3, [4, [5]]]]], '//number[text()="5"]/parent::array')
       ),
       expected: JSON.stringify([[5]])
     },
     {
       name: 'Find all arrays containing 5 with <code>//number[text()="5"]/ancestor::array</code>',
       input: () => JSON.stringify(
-        deepMatch([1, [2, [3, [4, [5]]]]], '//number[text()="5"]/ancestor::array')
+        esPath([1, [2, [3, [4, [5]]]]], '//number[text()="5"]/ancestor::array')
       ),
       expected: JSON.stringify([
         [1, [2, [3, [4, [5]]]]],
@@ -122,14 +122,14 @@
     {
       name: 'Find any value preceding a boolean true with <code>//boolean[text()="true"]/preceding-sibling::*[1]</code>',
       input: () => JSON.stringify(
-        deepMatch([1, true, 2, false, 3, true, 4, false], '//boolean[text()="true"]/preceding-sibling::*[1]')
+        esPath([1, true, 2, false, 3, true, 4, false], '//boolean[text()="true"]/preceding-sibling::*[1]')
       ),
       expected: JSON.stringify([1, 3])
     },
     {
       name: 'Find any value following a boolean false with <code>//boolean[text()="false"]/following-sibling::*[1]</code>',
       input: () => JSON.stringify(
-        deepMatch([1, true, 2, false, 3, true, 4, false], '//boolean[text()="false"]/following-sibling::*[1]')
+        esPath([1, true, 2, false, 3, true, 4, false], '//boolean[text()="false"]/following-sibling::*[1]')
       ),
       expected: JSON.stringify([3])
     },
@@ -138,14 +138,14 @@
     {
       name: 'Find the first value with <code>//*[position() = 1]</code>',
       input: () => JSON.stringify(
-        deepMatch(['one', 'two', 'three'], '//*[position() = 1]')
+        esPath(['one', 'two', 'three'], '//*[position() = 1]')
       ),
       expected: JSON.stringify(['one'])
     },
     {
       name: 'Find values containing the string "test" with <code>//*[contains(text(), "test")]</code>',
       input: () => JSON.stringify(
-        deepMatch(['test', 'testing', 'quizzed'], '//*[contains(text(), "test")]')
+        esPath(['test', 'testing', 'quizzed'], '//*[contains(text(), "test")]')
       ),
       expected: JSON.stringify(['test', 'testing'])
     },
@@ -154,7 +154,7 @@
     {
       name: 'Find all users born before 1990 with <code>//key[.="dob"]/following-sibling::value[number(.) < 1990]/ancestor::object</code>',
       input: () => JSON.stringify(
-        deepMatch(
+        esPath(
           [
             {
               user: 'Johnny',
@@ -193,14 +193,14 @@
     {
       name: 'No input',
       input: () => JSON.stringify(
-        deepMatch()
+        esPath()
       ),
       expected: JSON.stringify([])
     },
     {
       name: 'Wrong input',
       input: () => JSON.stringify(
-        deepMatch(() => 'lol oops!')
+        esPath(() => 'lol oops!')
       ),
       expected: JSON.stringify([])
     },
